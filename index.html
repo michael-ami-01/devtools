@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DevTools — Free Developer Utilities by Michael Zhang</title>
+<meta name="description" content="Free online developer tools: JSON Formatter, Base64 Encoder/Decoder, JWT Decoder, URL Encoder, Hash Generator, Unix Timestamp Converter. No signup required.">
+<meta name="keywords" content="json formatter, base64 encoder, jwt decoder, url encoder, hash generator, unix timestamp, developer tools, free tools">
+<meta name="author" content="Michael Zhang">
+<meta property="og:title" content="DevTools — Free Developer Utilities">
+<meta property="og:description" content="JSON Formatter, Base64 Encoder, JWT Decoder, URL Encoder, Hash Generator & more. Free, fast, no signup.">
+<meta property="og:type" content="website">
+<style>
+:root {
+  --bg: #0d1117; --surface: #161b22; --border: #30363d;
+  --text: #e6edf3; --muted: #8b949e; --accent: #58a6ff;
+  --green: #3fb950; --red: #f85149; --yellow: #d29922;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+.header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; }
+.header h1 { font-size: 1.4rem; font-weight: 600; }
+.header h1 span { color: var(--accent); }
+.header .by { color: var(--muted); font-size: 0.85rem; }
+.container { max-width: 1200px; margin: 0 auto; padding: 1.5rem; }
+.tools-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 0.75rem; margin-bottom: 1.5rem; }
+.tool-btn { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; cursor: pointer; text-align: center; transition: all 0.2s; color: var(--text); font-size: 0.9rem; }
+.tool-btn:hover, .tool-btn.active { border-color: var(--accent); background: rgba(88,166,255,0.1); }
+.tool-btn .icon { font-size: 1.5rem; margin-bottom: 0.4rem; }
+.workspace { display: none; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; }
+.workspace.active { display: block; }
+.workspace h2 { font-size: 1.2rem; margin-bottom: 0.5rem; }
+.workspace p.desc { color: var(--muted); font-size: 0.85rem; margin-bottom: 1rem; }
+.io-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+@media (max-width: 768px) { .io-grid { grid-template-columns: 1fr; } }
+textarea { width: 100%; min-height: 250px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.85rem; padding: 1rem; resize: vertical; }
+textarea:focus { outline: none; border-color: var(--accent); }
+label { display: block; font-size: 0.8rem; color: var(--muted); margin-bottom: 0.4rem; text-transform: uppercase; letter-spacing: 0.05em; }
+.actions { display: flex; gap: 0.5rem; margin: 1rem 0; flex-wrap: wrap; }
+.btn { padding: 0.5rem 1.2rem; border-radius: 6px; border: 1px solid var(--border); background: var(--surface); color: var(--text); cursor: pointer; font-size: 0.85rem; transition: all 0.15s; }
+.btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+.btn:hover { filter: brightness(1.2); }
+.status { padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.8rem; margin-top: 0.5rem; display: none; }
+.status.success { display: block; background: rgba(63,185,80,0.15); color: var(--green); border: 1px solid rgba(63,185,80,0.3); }
+.status.error { display: block; background: rgba(248,81,73,0.15); color: var(--red); border: 1px solid rgba(248,81,73,0.3); }
+.ad-slot { background: var(--surface); border: 1px dashed var(--border); border-radius: 8px; padding: 1rem; text-align: center; color: var(--muted); font-size: 0.8rem; margin: 1.5rem 0; min-height: 90px; display: flex; align-items: center; justify-content: center; }
+.footer { text-align: center; padding: 2rem; color: var(--muted); font-size: 0.8rem; border-top: 1px solid var(--border); margin-top: 2rem; }
+.footer a { color: var(--accent); text-decoration: none; }
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>⚡ <span>Dev</span>Tools</h1>
+  <span class="by">by <a href="https://github.com/mzio" style="color:var(--accent);text-decoration:none">Michael Zhang</a></span>
+</div>
+
+<div class="container">
+  <div class="tools-grid">
+    <div class="tool-btn active" onclick="showTool('json')"><div class="icon">{ }</div>JSON Formatter</div>
+    <div class="tool-btn" onclick="showTool('base64')"><div class="icon">🔤</div>Base64</div>
+    <div class="tool-btn" onclick="showTool('jwt')"><div class="icon">🔑</div>JWT Decoder</div>
+    <div class="tool-btn" onclick="showTool('url')"><div class="icon">🔗</div>URL Encode</div>
+    <div class="tool-btn" onclick="showTool('hash')"><div class="icon">#️⃣</div>Hash Generator</div>
+    <div class="tool-btn" onclick="showTool('timestamp')"><div class="icon">⏱️</div>Timestamp</div>
+    <div class="tool-btn" onclick="showTool('diff')"><div class="icon">📝</div>Text Diff</div>
+    <div class="tool-btn" onclick="showTool('color')"><div class="icon">🎨</div>Color Convert</div>
+  </div>
+
+  <!-- AD SLOT -->
+  <div class="ad-slot" id="ad-top"><!-- Ad placement: top leaderboard --></div>
+
+  <!-- JSON FORMATTER -->
+  <div class="workspace active" id="tool-json">
+    <h2>JSON Formatter & Validator</h2>
+    <p class="desc">Paste JSON to format, validate, and minify. Supports large files.</p>
+    <div class="io-grid">
+      <div><label>Input</label><textarea id="json-in" placeholder='{"key": "value", "nested": {"a": 1}}'></textarea></div>
+      <div><label>Output</label><textarea id="json-out" readonly></textarea></div>
+    </div>
+    <div class="actions">
+      <button class="btn btn-primary" onclick="jsonFormat()">Format (2-space)</button>
+      <button class="btn" onclick="jsonFormat(4)">Format (4-space)</button>
+      <button class="btn" onclick="jsonMinify()">Minify</button>
+      <button class="btn" onclick="jsonSort()">Sort Keys</button>
+      <button class="btn" onclick="copyOutput('json-out')">📋 Copy</button>
+    </div>
+    <div id="json-status" class="status"></div>
+  </div>
+
+  <!-- BASE64 -->
+  <div class="workspace" id="tool-base64">
+    <h2>Base64 Encoder / Decoder</h2>
+    <p class="desc">Encode text to Base64 or decode Base64 to text.</p>
+    <div class="io-grid">
+      <div><label>Input</label><textarea id="b64-in" placeholder="Enter text or Base64 string..."></textarea></div>
+      <div><label>Output</label><textarea id="b64-out" readonly></textarea></div>
+    </div>
+    <div class="actions">
+      <button class="btn btn-primary" onclick="b64Encode()">Encode →</button>
+      <button class="btn btn-primary" onclick="b64Decode()">← Decode</button>
+      <button class="btn" onclick="copyOutput('b64-out')">📋 Copy</button>
+    </div>
+  </div>
+
+  <!-- JWT DECODER -->
+  <div class="workspace" id="tool-jwt">
+    <h2>JWT Decoder</h2>
+    <p class="desc">Decode a JSON Web Token to see its header and payload. Does not verify signatures.</p>
+    <div class="io-grid">
+      <div><label>JWT Token</label><textarea id="jwt-in" placeholder="eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0..."></textarea></div>
+      <div><label>Decoded</label><textarea id="jwt-out" readonly></textarea></div>
+    </div>
+    <div class="actions">
+      <button class="btn btn-primary" onclick="jwtDecode()">Decode</button>
+      <button class="btn" onclick="copyOutput('jwt-out')">📋 Copy</button>
+    </div>
+  </div>
+
+  <!-- URL ENCODER -->
+  <div class="workspace" id="tool-url">
+    <h2>URL Encoder / Decoder</h2>
+    <p class="desc">Encode or decode URL components and query strings.</p>
+    <div class="io-grid">
+      <div><label>Input</label><textarea id="url-in" placeholder="hello world & foo=bar"></textarea></div>
+      <div><label>Output</label><textarea id="url-out" readonly></textarea></div>
+    </div>
+    <div class="actions">
+      <button class="btn btn-primary" onclick="urlEncode()">Encode →</button>
+      <button class="btn btn-primary" onclick="urlDecode()">← Decode</button>
+      <button class="btn" onclick="urlEncodeComponent()">encodeURIComponent</button>
+      <button class="btn" onclick="copyOutput('url-out')">📋 Copy</button>
+    </div>
+  </div>
+
+  <!-- HASH GENERATOR -->
+  <div class="workspace" id="tool-hash">
+    <h2>Hash Generator</h2>
+    <p class="desc">Generate MD5, SHA-1, SHA-256, SHA-512 hashes of text.</p>
+    <div class="io-grid">
+      <div><label>Input Text</label><textarea id="hash-in" placeholder="Enter text to hash..."></textarea></div>
+      <div><label>Hashes</label><textarea id="hash-out" readonly></textarea></div>
+    </div>
+    <div class="actions">
+      <button class="btn btn-primary" onclick="generateHashes()">Generate All Hashes</button>
+      <button class="btn" onclick="copyOutput('hash-out')">📋 Copy</button>
+    </div>
+  </div>
+
+  <!-- TIMESTAMP -->
+  <div class="workspace" id="tool-timestamp">
+    <h2>Unix Timestamp Converter</h2>
+    <p class="desc">Convert between Unix timestamps and human-readable dates.</p>
+    <div class="io-grid">
+      <div>
+        <label>Unix Timestamp</label><textarea id="ts-in" placeholder="1719878400" style="min-height:60px"></textarea>
+        <div style="margin-top:0.5rem"><label>Or Date String</label><textarea id="ts-date-in" placeholder="2026-07-01T12:00:00Z" style="min-height:60px"></textarea></div>
+      </div>
+      <div><label>Result</label><textarea id="ts-out" readonly></textarea></div>
+    </div>
+    <div class="actions">
+      <button class="btn btn-primary" onclick="tsToDate()">Timestamp → Date</button>
+      <button class="btn btn-primary" onclick="dateToTs()">Date → Timestamp</button>
+      <button class="btn" onclick="tsNow()">Now</button>
+      <button class="btn" onclick="copyOutput('ts-out')">📋 Copy</button>
+    </div>
+  </div>
+
+  <!-- TEXT DIFF -->
+  <div class="workspace" id="tool-diff">
+    <h2>Text Diff</h2>
+    <p class="desc">Compare two texts and see the differences highlighted.</p>
+    <div class="io-grid">
+      <div><label>Text A</label><textarea id="diff-a" placeholder="Original text..."></textarea></div>
+      <div><label>Text B</label><textarea id="diff-b" placeholder="Modified text..."></textarea></div>
+    </div>
+    <div class="actions">
+      <button class="btn btn-primary" onclick="computeDiff()">Compare</button>
+    </div>
+    <div id="diff-out" style="margin-top:1rem;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:1rem;font-family:monospace;font-size:0.85rem;white-space:pre-wrap;max-height:400px;overflow-y:auto"></div>
+  </div>
+
+  <!-- COLOR CONVERTER -->
+  <div class="workspace" id="tool-color">
+    <h2>Color Converter</h2>
+    <p class="desc">Convert between HEX, RGB, and HSL color formats.</p>
+    <div class="io-grid">
+      <div>
+        <label>Color Input</label><textarea id="color-in" placeholder="#58a6ff or rgb(88,166,255) or hsl(212,100%,67%)" style="min-height:60px"></textarea>
+        <div id="color-preview" style="width:100%;height:60px;border-radius:8px;margin-top:0.5rem;border:1px solid var(--border)"></div>
+      </div>
+      <div><label>All Formats</label><textarea id="color-out" readonly></textarea></div>
+    </div>
+    <div class="actions">
+      <button class="btn btn-primary" onclick="convertColor()">Convert</button>
+      <button class="btn" onclick="copyOutput('color-out')">📋 Copy</button>
+    </div>
+  </div>
+
+  <!-- AD SLOT BOTTOM -->
+  <div class="ad-slot" id="ad-bottom"><!-- Ad placement: bottom leaderboard --></div>
+</div>
+
+<div class="footer">
+  Built by <a href="https://github.com/mzio">Michael Zhang</a> · <a href="https://github.com/michael-ami-01/devtools">Source on GitHub</a> · Free forever, no tracking
+</div>
+
+<script>
+function showTool(name) {
+  document.querySelectorAll('.workspace').forEach(w => w.classList.remove('active'));
+  document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tool-' + name).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+
+function copyOutput(id) {
+  const el = document.getElementById(id);
+  navigator.clipboard.writeText(el.value).then(() => {
+    const orig = el.style.borderColor;
+    el.style.borderColor = 'var(--green)';
+    setTimeout(() => el.style.borderColor = orig, 500);
+  });
+}
+
+function setStatus(id, msg, type) {
+  const el = document.getElementById(id);
+  el.textContent = msg;
+  el.className = 'status ' + type;
+}
+
+// JSON
+function jsonFormat(indent = 2) {
+  try {
+    const obj = JSON.parse(document.getElementById('json-in').value);
+    document.getElementById('json-out').value = JSON.stringify(obj, null, indent);
+    setStatus('json-status', '✓ Valid JSON — ' + JSON.stringify(obj).length + ' chars', 'success');
+  } catch (e) { 
+    document.getElementById('json-out').value = '';
+    setStatus('json-status', '✗ ' + e.message, 'error');
+  }
+}
+function jsonMinify() {
+  try {
+    const obj = JSON.parse(document.getElementById('json-in').value);
+    document.getElementById('json-out').value = JSON.stringify(obj);
+    setStatus('json-status', '✓ Minified — ' + JSON.stringify(obj).length + ' chars', 'success');
+  } catch (e) { setStatus('json-status', '✗ ' + e.message, 'error'); }
+}
+function jsonSort() {
+  try {
+    const sortKeys = (obj) => {
+      if (Array.isArray(obj)) return obj.map(sortKeys);
+      if (obj && typeof obj === 'object') {
+        return Object.keys(obj).sort().reduce((r, k) => { r[k] = sortKeys(obj[k]); return r; }, {});
+      }
+      return obj;
+    };
+    const obj = sortKeys(JSON.parse(document.getElementById('json-in').value));
+    document.getElementById('json-out').value = JSON.stringify(obj, null, 2);
+    setStatus('json-status', '✓ Keys sorted', 'success');
+  } catch (e) { setStatus('json-status', '✗ ' + e.message, 'error'); }
+}
+
+// Base64
+function b64Encode() { document.getElementById('b64-out').value = btoa(unescape(encodeURIComponent(document.getElementById('b64-in').value))); }
+function b64Decode() {
+  try { document.getElementById('b64-out').value = decodeURIComponent(escape(atob(document.getElementById('b64-in').value.trim()))); }
+  catch (e) { document.getElementById('b64-out').value = 'Error: Invalid Base64 — ' + e.message; }
+}
+
+// JWT
+function jwtDecode() {
+  try {
+    const parts = document.getElementById('jwt-in').value.trim().split('.');
+    if (parts.length < 2) throw new Error('Invalid JWT format');
+    const pad = s => s + '='.repeat((4 - s.length % 4) % 4);
+    const header = JSON.parse(atob(pad(parts[0].replace(/-/g,'+').replace(/_/g,'/'))));
+    const payload = JSON.parse(atob(pad(parts[1].replace(/-/g,'+').replace(/_/g,'/'))));
+    let out = '=== HEADER ===\n' + JSON.stringify(header, null, 2) + '\n\n=== PAYLOAD ===\n' + JSON.stringify(payload, null, 2);
+    if (payload.exp) out += '\n\nExpires: ' + new Date(payload.exp * 1000).toISOString();
+    if (payload.iat) out += '\nIssued: ' + new Date(payload.iat * 1000).toISOString();
+    document.getElementById('jwt-out').value = out;
+  } catch (e) { document.getElementById('jwt-out').value = 'Error: ' + e.message; }
+}
+
+// URL
+function urlEncode() { document.getElementById('url-out').value = encodeURI(document.getElementById('url-in').value); }
+function urlDecode() { document.getElementById('url-out').value = decodeURI(document.getElementById('url-in').value); }
+function urlEncodeComponent() { document.getElementById('url-out').value = encodeURIComponent(document.getElementById('url-in').value); }
+
+// Hash
+async function generateHashes() {
+  const text = document.getElementById('hash-in').value;
+  const enc = new TextEncoder().encode(text);
+  const hex = buf => Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+  const sha1 = hex(await crypto.subtle.digest('SHA-1', enc));
+  const sha256 = hex(await crypto.subtle.digest('SHA-256', enc));
+  const sha512 = hex(await crypto.subtle.digest('SHA-512', enc));
+  document.getElementById('hash-out').value = 
+    'SHA-1:   ' + sha1 + '\nSHA-256: ' + sha256 + '\nSHA-512: ' + sha512 + '\n\nInput length: ' + text.length + ' chars';
+}
+
+// Timestamp
+function tsToDate() {
+  let ts = parseInt(document.getElementById('ts-in').value.trim());
+  if (ts < 1e12) ts *= 1000;
+  const d = new Date(ts);
+  document.getElementById('ts-out').value = 
+    'UTC:   ' + d.toUTCString() + '\nISO:   ' + d.toISOString() + '\nLocal: ' + d.toString() + '\nUnix:  ' + Math.floor(d.getTime()/1000);
+}
+function dateToTs() {
+  const d = new Date(document.getElementById('ts-date-in').value.trim());
+  document.getElementById('ts-out').value = 
+    'Unix (seconds): ' + Math.floor(d.getTime()/1000) + '\nUnix (ms):      ' + d.getTime() + '\nISO:            ' + d.toISOString();
+}
+function tsNow() {
+  const d = new Date();
+  document.getElementById('ts-in').value = Math.floor(d.getTime()/1000);
+  document.getElementById('ts-out').value = 
+    'Now: ' + d.toISOString() + '\nUnix (s):  ' + Math.floor(d.getTime()/1000) + '\nUnix (ms): ' + d.getTime();
+}
+
+// Diff
+function computeDiff() {
+  const a = document.getElementById('diff-a').value.split('\n');
+  const b = document.getElementById('diff-b').value.split('\n');
+  let html = '';
+  const max = Math.max(a.length, b.length);
+  for (let i = 0; i < max; i++) {
+    if (i >= a.length) html += '<div style="color:var(--green)">+ ' + escHtml(b[i]) + '</div>';
+    else if (i >= b.length) html += '<div style="color:var(--red)">- ' + escHtml(a[i]) + '</div>';
+    else if (a[i] !== b[i]) html += '<div style="color:var(--red)">- ' + escHtml(a[i]) + '</div><div style="color:var(--green)">+ ' + escHtml(b[i]) + '</div>';
+    else html += '<div style="color:var(--muted)">  ' + escHtml(a[i]) + '</div>';
+  }
+  document.getElementById('diff-out').innerHTML = html || '<span style="color:var(--muted)">No differences found</span>';
+}
+function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// Color
+function convertColor() {
+  const input = document.getElementById('color-in').value.trim();
+  let r, g, b;
+  const hexMatch = input.match(/^#?([0-9a-f]{6}|[0-9a-f]{3})$/i);
+  const rgbMatch = input.match(/rgb\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)/);
+  if (hexMatch) {
+    let h = hexMatch[1];
+    if (h.length === 3) h = h[0]+h[0]+h[1]+h[1]+h[2]+h[2];
+    r = parseInt(h.substr(0,2),16); g = parseInt(h.substr(2,2),16); b = parseInt(h.substr(4,2),16);
+  } else if (rgbMatch) {
+    r = parseInt(rgbMatch[1]); g = parseInt(rgbMatch[2]); b = parseInt(rgbMatch[3]);
+  } else {
+    document.getElementById('color-out').value = 'Enter a valid HEX (#ff0000) or RGB (rgb(255,0,0))';
+    return;
+  }
+  const hex = '#' + [r,g,b].map(x => x.toString(16).padStart(2,'0')).join('');
+  const max1 = Math.max(r,g,b)/255, min1 = Math.min(r,g,b)/255;
+  const l = (max1+min1)/2;
+  let h=0, s=0;
+  if (max1 !== min1) {
+    const d = max1-min1;
+    s = l > 0.5 ? d/(2-max1-min1) : d/(max1+min1);
+    if (max1 === r/255) h = ((g/255-b/255)/d + (g<b?6:0))*60;
+    else if (max1 === g/255) h = ((b/255-r/255)/d+2)*60;
+    else h = ((r/255-g/255)/d+4)*60;
+  }
+  document.getElementById('color-out').value = 
+    'HEX: ' + hex + '\nRGB: rgb(' + r + ', ' + g + ', ' + b + ')\nHSL: hsl(' + Math.round(h) + ', ' + Math.round(s*100) + '%, ' + Math.round(l*100) + '%)';
+  document.getElementById('color-preview').style.background = hex;
+}
+</script>
+</body>
+</html>
