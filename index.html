@@ -4,11 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>DevTools — Free Developer Utilities by Michael Zhang</title>
-<meta name="description" content="Free online developer tools: JSON Formatter, Base64 Encoder/Decoder, JWT Decoder, URL Encoder, Hash Generator, Unix Timestamp Converter. No signup required.">
-<meta name="keywords" content="json formatter, base64 encoder, jwt decoder, url encoder, hash generator, unix timestamp, developer tools, free tools">
+<meta name="description" content="Free online developer tools: JSON Formatter, Base64 Encoder/Decoder, JWT Decoder, URL Encoder, Hash Generator, Unix Timestamp Converter, Regex Tester, Markdown Preview, CSS Gradient Generator. No signup required.">
+<meta name="keywords" content="json formatter, base64 encoder, jwt decoder, url encoder, hash generator, unix timestamp, regex tester, markdown preview, css gradient generator, developer tools, free tools">
 <meta name="author" content="Michael Zhang">
 <meta property="og:title" content="DevTools — Free Developer Utilities">
-<meta property="og:description" content="JSON Formatter, Base64 Encoder, JWT Decoder, URL Encoder, Hash Generator & more. Free, fast, no signup.">
+<meta property="og:description" content="JSON Formatter, Base64 Encoder, JWT Decoder, URL Encoder, Hash Generator, Regex Tester, Markdown Preview, CSS Gradient Generator & more. Free, fast, no signup.">
 <meta property="og:type" content="website">
 <style>
 :root {
@@ -64,6 +64,9 @@ label { display: block; font-size: 0.8rem; color: var(--muted); margin-bottom: 0
     <div class="tool-btn" onclick="showTool('timestamp')"><div class="icon">⏱️</div>Timestamp</div>
     <div class="tool-btn" onclick="showTool('diff')"><div class="icon">📝</div>Text Diff</div>
     <div class="tool-btn" onclick="showTool('color')"><div class="icon">🎨</div>Color Convert</div>
+    <div class="tool-btn" onclick="showTool('regex')"><div class="icon">.*</div>Regex Tester</div>
+    <div class="tool-btn" onclick="showTool('markdown')"><div class="icon">📄</div>Markdown Preview</div>
+    <div class="tool-btn" onclick="showTool('gradient')"><div class="icon">🌈</div>CSS Gradient</div>
   </div>
 
   <!-- AD SLOT -->
@@ -193,6 +196,91 @@ label { display: block; font-size: 0.8rem; color: var(--muted); margin-bottom: 0
     <div class="actions">
       <button class="btn btn-primary" onclick="convertColor()">Convert</button>
       <button class="btn" onclick="copyOutput('color-out')">📋 Copy</button>
+    </div>
+  </div>
+
+  <!-- REGEX TESTER -->
+  <div class="workspace" id="tool-regex">
+    <h2>Regex Tester</h2>
+    <p class="desc">Test regular expressions against text with live match highlighting and capture groups.</p>
+    <div style="display:flex;gap:0.5rem;margin-bottom:1rem;flex-wrap:wrap">
+      <div style="flex:1;min-width:200px">
+        <label>Pattern</label>
+        <input type="text" id="regex-pattern" placeholder="e.g. (\w+)@(\w+\.\w+)" style="width:100%;padding:0.6rem 1rem;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'SF Mono','Fira Code',monospace;font-size:0.85rem" oninput="regexTest()">
+      </div>
+      <div style="width:100px">
+        <label>Flags</label>
+        <input type="text" id="regex-flags" value="gm" placeholder="gim" style="width:100%;padding:0.6rem 1rem;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:monospace;font-size:0.85rem" oninput="regexTest()">
+      </div>
+    </div>
+    <div class="io-grid">
+      <div><label>Test String</label><textarea id="regex-in" placeholder="Enter text to test against..." oninput="regexTest()"></textarea></div>
+      <div>
+        <label>Matches</label><textarea id="regex-out" readonly></textarea>
+        <div id="regex-status" class="status"></div>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="btn" onclick="copyOutput('regex-out')">📋 Copy Matches</button>
+    </div>
+  </div>
+
+  <!-- MARKDOWN PREVIEW -->
+  <div class="workspace" id="tool-markdown">
+    <h2>Markdown Preview</h2>
+    <p class="desc">Write Markdown and see a live HTML preview. Supports headings, bold, italic, code, links, lists, blockquotes, and tables.</p>
+    <div class="io-grid">
+      <div><label>Markdown</label><textarea id="md-in" placeholder="# Hello World&#10;&#10;Some **bold** and *italic* text.&#10;&#10;- Item 1&#10;- Item 2&#10;&#10;```js&#10;console.log('hi');&#10;```" oninput="mdPreview()"></textarea></div>
+      <div>
+        <label>Preview</label>
+        <div id="md-out" style="min-height:250px;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:1rem;overflow-y:auto;max-height:500px;font-size:0.9rem;line-height:1.7"></div>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="btn btn-primary" onclick="mdPreview()">Render</button>
+      <button class="btn" onclick="mdCopyHTML()">📋 Copy HTML</button>
+    </div>
+  </div>
+
+  <!-- CSS GRADIENT GENERATOR -->
+  <div class="workspace" id="tool-gradient">
+    <h2>CSS Gradient Generator</h2>
+    <p class="desc">Create linear and radial CSS gradients visually. Copy the CSS to use in your projects.</p>
+    <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1rem">
+      <div>
+        <label>Type</label>
+        <select id="grad-type" onchange="gradUpdate()" style="padding:0.5rem;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.85rem">
+          <option value="linear">Linear</option>
+          <option value="radial">Radial</option>
+        </select>
+      </div>
+      <div>
+        <label>Angle (linear)</label>
+        <input type="range" id="grad-angle" min="0" max="360" value="135" oninput="gradUpdate()" style="width:120px">
+        <span id="grad-angle-val" style="color:var(--muted);font-size:0.8rem;margin-left:4px">135°</span>
+      </div>
+      <div>
+        <label>Color 1</label>
+        <input type="color" id="grad-c1" value="#58a6ff" oninput="gradUpdate()" style="width:50px;height:32px;border:none;cursor:pointer;background:none">
+      </div>
+      <div>
+        <label>Color 2</label>
+        <input type="color" id="grad-c2" value="#f85149" oninput="gradUpdate()" style="width:50px;height:32px;border:none;cursor:pointer;background:none">
+      </div>
+      <div>
+        <label>Color 3 (optional)</label>
+        <input type="color" id="grad-c3" value="#3fb950" oninput="gradUpdate()" style="width:50px;height:32px;border:none;cursor:pointer;background:none">
+        <label style="display:inline;margin-left:4px"><input type="checkbox" id="grad-c3-on" onchange="gradUpdate()"> Enable</label>
+      </div>
+    </div>
+    <div id="grad-preview" style="width:100%;height:150px;border-radius:12px;border:1px solid var(--border);margin-bottom:1rem"></div>
+    <div>
+      <label>CSS Output</label>
+      <textarea id="grad-out" readonly style="min-height:80px"></textarea>
+    </div>
+    <div class="actions">
+      <button class="btn btn-primary" onclick="gradUpdate()">Generate</button>
+      <button class="btn" onclick="copyOutput('grad-out')">📋 Copy CSS</button>
     </div>
   </div>
 
@@ -366,6 +454,123 @@ function convertColor() {
     'HEX: ' + hex + '\nRGB: rgb(' + r + ', ' + g + ', ' + b + ')\nHSL: hsl(' + Math.round(h) + ', ' + Math.round(s*100) + '%, ' + Math.round(l*100) + '%)';
   document.getElementById('color-preview').style.background = hex;
 }
+
+// Regex Tester
+function regexTest() {
+  const pattern = document.getElementById('regex-pattern').value;
+  const flags = document.getElementById('regex-flags').value;
+  const text = document.getElementById('regex-in').value;
+  if (!pattern) { document.getElementById('regex-out').value = ''; document.getElementById('regex-status').className = 'status'; return; }
+  try {
+    const re = new RegExp(pattern, flags);
+    const matches = [];
+    let m, count = 0;
+    if (flags.includes('g')) {
+      while ((m = re.exec(text)) !== null && count < 200) {
+        let entry = 'Match ' + (count+1) + ' at [' + m.index + '-' + (m.index+m[0].length) + ']: ' + JSON.stringify(m[0]);
+        if (m.length > 1) {
+          for (let i = 1; i < m.length; i++) entry += '\n  Group ' + i + ': ' + JSON.stringify(m[i]);
+        }
+        matches.push(entry);
+        count++;
+        if (m[0].length === 0) re.lastIndex++;
+      }
+    } else {
+      m = re.exec(text);
+      if (m) {
+        let entry = 'Match at [' + m.index + '-' + (m.index+m[0].length) + ']: ' + JSON.stringify(m[0]);
+        if (m.length > 1) {
+          for (let i = 1; i < m.length; i++) entry += '\n  Group ' + i + ': ' + JSON.stringify(m[i]);
+        }
+        matches.push(entry);
+        count = 1;
+      }
+    }
+    document.getElementById('regex-out').value = matches.length ? matches.join('\n\n') : 'No matches found';
+    setStatus('regex-status', count + ' match' + (count !== 1 ? 'es' : '') + ' found', count > 0 ? 'success' : 'error');
+  } catch (e) {
+    document.getElementById('regex-out').value = '';
+    setStatus('regex-status', '✗ ' + e.message, 'error');
+  }
+}
+
+// Markdown Preview (lightweight parser, no deps)
+function mdRender(md) {
+  let html = md;
+  // Code blocks
+  html = html.replace(/```(\w*)\n([\s\S]*?)```/g, function(_, lang, code) {
+    return '<pre style="background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:0.8rem;overflow-x:auto;font-size:0.85rem"><code>' + escHtml(code.replace(/\n$/, '')) + '</code></pre>';
+  });
+  // Inline code
+  html = html.replace(/`([^`]+)`/g, '<code style="background:var(--surface);padding:0.15em 0.4em;border-radius:4px;font-size:0.85em">$1</code>');
+  // Tables
+  html = html.replace(/^(\|.+\|)\n(\|[\s:-]+\|)\n((?:\|.+\|\n?)+)/gm, function(_, header, sep, body) {
+    const thCells = header.split('|').filter(c => c.trim());
+    let t = '<table style="border-collapse:collapse;width:100%;margin:0.5rem 0"><thead><tr>';
+    thCells.forEach(c => t += '<th style="border:1px solid var(--border);padding:0.4rem 0.8rem;text-align:left">' + c.trim() + '</th>');
+    t += '</tr></thead><tbody>';
+    body.trim().split('\n').forEach(row => {
+      const cells = row.split('|').filter(c => c.trim());
+      t += '<tr>';
+      cells.forEach(c => t += '<td style="border:1px solid var(--border);padding:0.4rem 0.8rem">' + c.trim() + '</td>');
+      t += '</tr>';
+    });
+    return t + '</tbody></table>';
+  });
+  // Headings
+  html = html.replace(/^#### (.+)$/gm, '<h4 style="margin:0.8rem 0 0.3rem">$1</h4>');
+  html = html.replace(/^### (.+)$/gm, '<h3 style="margin:0.8rem 0 0.3rem">$1</h3>');
+  html = html.replace(/^## (.+)$/gm, '<h2 style="margin:1rem 0 0.4rem">$1</h2>');
+  html = html.replace(/^# (.+)$/gm, '<h1 style="margin:1rem 0 0.5rem">$1</h1>');
+  // Blockquotes
+  html = html.replace(/^> (.+)$/gm, '<blockquote style="border-left:3px solid var(--accent);padding-left:1rem;color:var(--muted);margin:0.5rem 0">$1</blockquote>');
+  // Horizontal rules
+  html = html.replace(/^---$/gm, '<hr style="border:none;border-top:1px solid var(--border);margin:1rem 0">');
+  // Bold + italic combos
+  html = html.replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>');
+  html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
+  // Links and images
+  html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" style="max-width:100%;border-radius:6px">');
+  html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" style="color:var(--accent)">$1</a>');
+  // Unordered lists
+  html = html.replace(/^[-*] (.+)$/gm, '<li style="margin-left:1.5rem">$1</li>');
+  // Ordered lists
+  html = html.replace(/^\d+\. (.+)$/gm, '<li style="margin-left:1.5rem;list-style:decimal">$1</li>');
+  // Paragraphs (double newlines)
+  html = html.replace(/\n\n/g, '<br><br>');
+  return html;
+}
+
+function mdPreview() {
+  const md = document.getElementById('md-in').value;
+  document.getElementById('md-out').innerHTML = mdRender(md) || '<span style="color:var(--muted)">Start typing Markdown...</span>';
+}
+function mdCopyHTML() {
+  const md = document.getElementById('md-in').value;
+  navigator.clipboard.writeText(mdRender(md));
+}
+
+// CSS Gradient Generator
+function gradUpdate() {
+  const type = document.getElementById('grad-type').value;
+  const angle = document.getElementById('grad-angle').value;
+  const c1 = document.getElementById('grad-c1').value;
+  const c2 = document.getElementById('grad-c2').value;
+  const c3 = document.getElementById('grad-c3').value;
+  const c3on = document.getElementById('grad-c3-on').checked;
+  document.getElementById('grad-angle-val').textContent = angle + '°';
+  const colors = c3on ? c1 + ', ' + c2 + ', ' + c3 : c1 + ', ' + c2;
+  let css;
+  if (type === 'linear') {
+    css = 'background: linear-gradient(' + angle + 'deg, ' + colors + ');';
+  } else {
+    css = 'background: radial-gradient(circle, ' + colors + ');';
+  }
+  document.getElementById('grad-preview').style.cssText = 'width:100%;height:150px;border-radius:12px;border:1px solid var(--border);margin-bottom:1rem;' + css;
+  document.getElementById('grad-out').value = css;
+}
+gradUpdate();
 </script>
 </body>
 </html>
